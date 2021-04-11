@@ -1,0 +1,89 @@
+%  -*- coding: utf-8 -*-
+\documentclass{article}
+\usepackage[a4paper,margin=1.5cm]{geometry}
+
+\usepackage{ninecolors}
+\usepackage{arev}
+\usepackage{pgffor}
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  urlcolor=blue3,
+}
+
+\newcommand*{\myversion}{2021A}
+\newcommand*{\mydate}{\the\year/\mylpad\month/\mylpad\day\ (v\myversion)}
+\newcommand*{\mylpad}[1]{\ifnum#1<10 0\the#1\else\the#1\fi}
+
+\begin{document}
+
+\title{\href{https://github.com/lvjr/ninecolors}{Ninecolors: select colors with proper WCAG color contrast}}
+\author{Jianrui Lyu (tolvjr@163.com)}
+\date{\mydate}
+\maketitle
+
+\textcolor{red4}{Ninecolors} package carefully selects and defines 9 colors for 13 hues each.
+All colors with the same suffix number have equal luminance level.
+Also color black is of level 0, and color white is of level 10.
+
+\bigskip
+
+\foreach \l in {1,...,9}
+{
+  \noindent
+  \foreach \n in {gray,red,brown,yellow,olive,green,teal,cyan,azure,blue,violet,magenta,purple}
+  {%
+    \xdef\mycolor{\ifnum \l < 5 white\else black\fi}%
+    \colorbox{\n\l}{\color{\mycolor}\texttt\strut\n\l}%
+  }
+  \par
+}
+
+\bigskip
+
+\foreach \l in {1,...,9}
+{
+  \noindent
+  \foreach \n in {gray,red,brown,yellow,olive,green,teal,cyan,azure,blue,violet,magenta,purple}
+  {%
+    \xdef\mycolor{\ifnum \l < 5 gray9\else black\fi}%
+    \colorbox{\mycolor}{\color{\n\l}\texttt\strut\n\l}%
+  }
+  \par
+}
+
+\bigskip
+\hrule
+\bigskip
+
+By simply choosing two colors in the above list, which differ in level by at least 5,
+as foreground and background colors, you will get proper
+\href{https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html}{WCAG Color Contrast}.
+
+\bigskip
+
+\colorbox{blue9}{%
+  \strut\color{green3}The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+}
+\par\nointerlineskip
+\colorbox{green3}{%
+  \strut\color{blue9}The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+}
+\par\nointerlineskip
+\colorbox{violet9}{%
+  \strut\color{brown3}The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+}
+\par\nointerlineskip
+\colorbox{brown3}{%
+  \strut\color{violet9}The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
+}
+
+\bigskip
+\hrule
+\bigskip
+
+If you need to select more contrasting foreground and background colors, which may have other hues,
+you could visit \href{https://lvjr.bitbucket.io/contrast.html}{WCAG Color Contrast Tool}
+page which is designed by the author.
+
+\end{document}
