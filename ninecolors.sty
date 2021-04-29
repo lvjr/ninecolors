@@ -12,6 +12,20 @@
 
 \ExplSyntaxOn
 
+\tl_new:N \l__ninecolors_sat_tl
+
+\keys_define:nn {ninecolors}
+  {
+    saturation .tl_set:N = \l__ninecolors_sat_tl,
+    saturation .initial:n = medium,
+  }
+
+\NewDocumentCommand \NineColors {m}
+  {
+    \keys_set:nn {ninecolors} {#1}
+    \cs:w ninecolors@define@color@ \l__ninecolors_sat_tl \cs_end:
+  }
+
 \@namedef{ninecolors@define@mono}{%
   \definecolor{gray1}{gray}{0.14}
   \definecolor{gray2}{gray}{0.23}
