@@ -10,6 +10,8 @@
 \ProvidesClass{ninecolors}[2021/04/11 v2021A Select colors with proper color contrast]
 \RequirePackage{xcolor}
 
+\ExplSyntaxOn
+
 \@namedef{ninecolors@define@mono}{%
   \definecolor{gray1}{gray}{0.14}
   \definecolor{gray2}{gray}{0.23}
@@ -357,4 +359,6 @@
 
 \@nameuse{ninecolors@define@mono}
 \@nameuse{ninecolors@define@color@medium}
+
+\ExplSyntaxOff
 
