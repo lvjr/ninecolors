@@ -11,13 +11,14 @@
   urlcolor=blue3,
 }
 
-\newcommand*{\myversion}{2021A}
-\newcommand*{\mydate}{\the\year/\mylpad\month/\mylpad\day\ (v\myversion)}
+\newcommand*{\myversion}{2021B}
+\newcommand*{\mydate}{Version \myversion\ (\the\year-\mylpad\month-\mylpad\day)}
 \newcommand*{\mylpad}[1]{\ifnum#1<10 0\the#1\else\the#1\fi}
 
 \begin{document}
 
-\title{\href{https://github.com/lvjr/ninecolors}{Ninecolors: select colors with proper WCAG color contrast}}
+\title{\textcolor{blue3}{Ninecolors: select colors with proper WCAG color contrast}%
+       \footnote{\url{https://github.com/lvjr/ninecolors}}}
 \author{Jianrui Lyu (tolvjr@163.com)}
 \date{\mydate}
 \maketitle
@@ -28,6 +29,7 @@ Also color black is of level 0, and color white is of level 10.
 
 \bigskip
 
+\newcommand{\NineTestBack}{%
 \foreach \l in {1,...,9}
 {
   \noindent
@@ -37,10 +39,12 @@ Also color black is of level 0, and color white is of level 10.
     \colorbox{\n\l}{\color{\mycolor}\texttt\strut\n\l}%
   }
   \par
-}
+}}
+\NineTestBack
 
 \bigskip
 
+\newcommand{\NineTestFore}{%
 \foreach \l in {1,...,9}
 {
   \noindent
@@ -50,7 +54,8 @@ Also color black is of level 0, and color white is of level 10.
     \colorbox{\mycolor}{\color{\n\l}\texttt\strut\n\l}%
   }
   \par
-}
+}}
+\NineTestFore
 
 \bigskip
 \hrule
@@ -62,6 +67,7 @@ as foreground and background colors, you will get proper
 
 \bigskip
 
+\newcommand{\NineTestContrast}{%
 \colorbox{blue9}{%
   \strut\color{green3}The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
 }
@@ -76,7 +82,90 @@ as foreground and background colors, you will get proper
 \par\nointerlineskip
 \colorbox{brown3}{%
   \strut\color{violet9}The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
-}
+}}
+\NineTestContrast
+
+\bigskip
+\hrule
+\bigskip
+
+If you need to select more contrasting foreground and background colors, which may have other hues,
+you could visit \href{https://lvjr.bitbucket.io/contrast.html}{WCAG Color Contrast Tool}
+page which is designed by the author.
+
+\newpage\vspace*{31mm}
+\NineColors{saturation=low}
+
+You can change the saturation of colors by {\color{red3}\verb!\NineColors!} command.
+By default {\color{red3}\verb!saturation=medium!}.
+Colors in this page have been changed by {\color{red3}\verb!\NineColors{saturation=low}!}.
+
+\bigskip
+
+\textcolor{red4}{Ninecolors} package carefully selects and defines 9 colors for 13 hues each.
+All colors with the same suffix number have equal luminance level.
+Also color black is of level 0, and color white is of level 10.
+
+\bigskip
+
+\NineTestBack
+
+\bigskip
+
+\NineTestFore
+
+\bigskip
+\hrule
+\bigskip
+
+By simply choosing two colors in the above list, which differ in level by at least 5,
+as foreground and background colors, you will get proper
+\href{https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html}{WCAG Color Contrast}.
+
+\bigskip
+
+\NineTestContrast
+
+\bigskip
+\hrule
+\bigskip
+
+If you need to select more contrasting foreground and background colors, which may have other hues,
+you could visit \href{https://lvjr.bitbucket.io/contrast.html}{WCAG Color Contrast Tool}
+page which is designed by the author.
+
+\newpage\vspace*{31mm}
+\NineColors{saturation=high}
+
+You can change the saturation of colors by {\color{red3}\verb!\NineColors!} command.
+By default {\color{red3}\verb!saturation=medium!}.
+Colors in this page have been changed by {\color{red3}\verb!\NineColors{saturation=high}!}.
+
+\bigskip
+
+\textcolor{red4}{Ninecolors} package carefully selects and defines 9 colors for 13 hues each.
+All colors with the same suffix number have equal luminance level.
+Also color black is of level 0, and color white is of level 10.
+
+\bigskip
+
+\NineTestBack
+
+\bigskip
+
+\NineTestFore
+
+\bigskip
+\hrule
+\bigskip
+
+By simply choosing two colors in the above list, which differ in level by at least 5,
+as foreground and background colors, you will get proper
+\href{https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html}{WCAG Color Contrast}.
+
+\bigskip
+
+\NineTestContrast
 
 \bigskip
 \hrule
