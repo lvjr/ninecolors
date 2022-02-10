@@ -2,72 +2,48 @@
 \documentclass{article}
 \usepackage[a4paper,margin=1.5cm]{geometry}
 
+\newcommand*{\myversion}{2022D}
+\newcommand*{\mydate}{Version \myversion\ (\the\year-\mylpad\month-\mylpad\day)}
+\newcommand*{\mylpad}[1]{\ifnum#1<10 0\the#1\else\the#1\fi}
+
 \usepackage{ninecolors}
 \usepackage{arev}
 \usepackage{pgffor}
+\usepackage{l3draw}
 \usepackage{hyperref}
 \hypersetup{
   colorlinks=true,
   urlcolor=blue3,
 }
 
-\newcommand*{\myversion}{2022D}
-\newcommand*{\mydate}{Version \myversion\ (\the\year-\mylpad\month-\mylpad\day)}
-\newcommand*{\mylpad}[1]{\ifnum#1<10 0\the#1\else\the#1\fi}
+\setlength{\parindent}{0pt}
+%\setlength{\parskip}{4pt plus 1pt minus 1pt}
 
-\begin{document}
-
-\title{\textcolor{blue3}{Ninecolors: select colors with proper WCAG color contrast}%
-       \footnote{\url{https://github.com/lvjr/ninecolors}}}
-\author{Jianrui Lyu (tolvjr@163.com)}
-\date{\mydate}
-\maketitle
-
-\textcolor{red4}{Ninecolors} package carefully selects and defines 9 colors for 13 hues each.
-All colors with the same suffix number have equal luminance level.
-Also color black is of level 0, and color white is of level 10.
-
-\bigskip
-
-\newcommand{\NineTestBack}{%
+\newcommand\NineTestBack{%
 \foreach \l in {1,...,9}
 {
   \noindent
   \foreach \n in {gray,red,brown,yellow,olive,green,teal,cyan,azure,blue,violet,magenta,purple}
   {%
     \xdef\mycolor{\ifnum \l < 5 white\else black\fi}%
-    \colorbox{\n\l}{\color{\mycolor}\texttt\strut\n\l}%
+    \colorbox{\n\l}{\color{\mycolor}\strut\n\l}%
   }
   \par
 }}
-\NineTestBack
 
-\bigskip
-
-\newcommand{\NineTestFore}{%
+\newcommand\NineTestFore{%
 \foreach \l in {1,...,9}
 {
   \noindent
   \foreach \n in {gray,red,brown,yellow,olive,green,teal,cyan,azure,blue,violet,magenta,purple}
   {%
     \xdef\mycolor{\ifnum \l < 5 gray9\else black\fi}%
-    \colorbox{\mycolor}{\color{\n\l}\texttt\strut\n\l}%
+    \colorbox{\mycolor}{\color{\n\l}\strut\n\l}%
   }
   \par
 }}
-\NineTestFore
 
-\bigskip
-\hrule
-\bigskip
-
-By simply choosing two colors in the above list, which differ in level by at least 5,
-as foreground and background colors, you will get proper
-\href{https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html}{WCAG Color Contrast}.
-
-\bigskip
-
-\newcommand{\NineTestContrast}{%
+\newcommand\NineTestContrast{%
 \colorbox{blue9}{%
   \strut\color{green3}The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
 }
@@ -83,22 +59,107 @@ as foreground and background colors, you will get proper
 \colorbox{brown3}{%
   \strut\color{violet9}The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog.
 }}
-\NineTestContrast
+
+\newcommand\NineTestSaturation[1]{{%
+  \NineColors{saturation=#1}
+  \noindent\centering
+  \colorbox{white}{\makebox[4em]{\strut #1}}%
+  \foreach \n in {red,brown,yellow,olive,green,teal,cyan,azure,blue,violet,magenta,purple}
+  {%
+    \colorbox{\n5}{\makebox[3em]{\strut\rule[-2ex]{0pt}{5.5ex}TEST}}%
+  }
+  \par
+}}
+
+\newcommand\NineTestAllSaturations{%
+  \NineTestSaturation{high}%
+  \NineTestSaturation{medium}%
+  \NineTestSaturation{low}%
+}
+
+\ExplSyntaxOn
+
+\cs_generate_variant:Nn \color_fill:n { x }
+\cs_generate_variant:Nn \color_stroke:n { x }
+
+\newcommand\NineTestDraw{
+  \foreach \l [evaluate=\l~as~\m~using~int(10-\l)] in {1,...,9}
+  {
+    \noindent
+    \foreach \n in {gray,red,brown,yellow,olive,green,teal,
+                    cyan,azure,blue,violet,magenta,purple}
+    {
+      \draw_begin:
+        \draw_scope_begin:
+          \color_stroke:x { \n\m }
+          \color_fill:x { \n\l }
+          \draw_path_circle:nn { 0, 0 } { 10pt }
+          \draw_path_use_clear:n { stroke, fill }
+        \draw_scope_end:
+      \draw_end:
+      \qquad
+    }
+    \par
+    \vspace*{0.5ex}
+  }
+}
+
+\ExplSyntaxOff
+
+\begin{document}
+
+\title{\textcolor{blue3}{Ninecolors: Select Colors with Proper WCAG Color Contrast}%
+       \footnote{\url{https://github.com/lvjr/ninecolors}}}
+\author{Jianrui Lyu (tolvjr@163.com) \\ Nan Geng (nangeng@nwafu.edu.cn)}
+\date{\mydate}
+\maketitle
+
+\section{LaTeX2 Colors with Medium Saturation}
+
+\textcolor{red4}{Ninecolors} package carefully selects and defines 9 colors for 13 hues each.
+All colors with the same suffix number have equal luminance level.
+Also color black is of level 0, and color white is of level 10.
 
 \bigskip
-\hrule
+
+\NineTestBack
+
+\medskip
+
+\NineTestFore
+
+\bigskip
+
+By simply choosing two colors in the above list, which differ in level by at least 5,
+as foreground and background colors, you will get proper
+\href{https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html}{WCAG Color Contrast}.
+
+\bigskip
+
+\NineTestContrast
+
 \bigskip
 
 If you need to select more contrasting foreground and background colors, which may have other hues,
 you could visit \href{https://lvjr.bitbucket.io/contrast.html}{WCAG Color Contrast Tool}
-page which is designed by the author.
+page which is designed by the first author.
 
-\newpage\vspace*{31mm}
+\newpage
+
+\section{LaTeX2 Colors with Low Saturation}
+
+You can change the saturation of colors by {\color{red3}\verb!\NineColors!} command.
+By default {\color{red3}\verb!saturation=medium!}.
+
+\bigskip
+
+\NineTestAllSaturations
+
+\bigskip
+
 \NineColors{saturation=low}
-
-You can change the saturation of colors by {\color{red3}\verb!\NineColors!} command.
-By default {\color{red3}\verb!saturation=medium!}.
-Colors in this page have been changed by {\color{red3}\verb!\NineColors{saturation=low}!}.
+Colors in the remaining part of the page have been changed by
+{\color{red3}\verb!\NineColors{saturation=low}!}.
 
 \bigskip
 
@@ -110,12 +171,10 @@ Also color black is of level 0, and color white is of level 10.
 
 \NineTestBack
 
-\bigskip
+\medskip
 
 \NineTestFore
 
-\bigskip
-\hrule
 \bigskip
 
 By simply choosing two colors in the above list, which differ in level by at least 5,
@@ -127,19 +186,27 @@ as foreground and background colors, you will get proper
 \NineTestContrast
 
 \bigskip
-\hrule
-\bigskip
 
 If you need to select more contrasting foreground and background colors, which may have other hues,
 you could visit \href{https://lvjr.bitbucket.io/contrast.html}{WCAG Color Contrast Tool}
-page which is designed by the author.
+page which is designed by the first author.
 
-\newpage\vspace*{31mm}
+\newpage
+
+\section{LaTeX2 Colors with High Saturation}
+
+You can change the saturation of colors by {\color{red3}\verb!\NineColors!} command.
+By default {\color{red3}\verb!saturation=medium!}.
+
+\bigskip
+
+\NineTestAllSaturations
+
+\bigskip
+
 \NineColors{saturation=high}
-
-You can change the saturation of colors by {\color{red3}\verb!\NineColors!} command.
-By default {\color{red3}\verb!saturation=medium!}.
-Colors in this page have been changed by {\color{red3}\verb!\NineColors{saturation=high}!}.
+Colors in the remaining part of the page have been changed by
+{\color{red3}\verb!\NineColors{saturation=high}!}.
 
 \bigskip
 
@@ -151,12 +218,10 @@ Also color black is of level 0, and color white is of level 10.
 
 \NineTestBack
 
-\bigskip
+\medskip
 
 \NineTestFore
 
-\bigskip
-\hrule
 \bigskip
 
 By simply choosing two colors in the above list, which differ in level by at least 5,
@@ -168,11 +233,32 @@ as foreground and background colors, you will get proper
 \NineTestContrast
 
 \bigskip
-\hrule
-\bigskip
 
 If you need to select more contrasting foreground and background colors, which may have other hues,
 you could visit \href{https://lvjr.bitbucket.io/contrast.html}{WCAG Color Contrast Tool}
-page which is designed by the author.
+page which is designed by the first author.
+
+\newpage
+
+\section{LaTeX3 Colors for Fun}
+
+\NineColors{saturation=medium}
+
+If you are using a LaTeX3 release not older than 2021-07-12,
+\textcolor{red4}{Ninecolors} package will define latex3 colors of the same names for you.
+
+\bigskip
+
+For example, you can change the color of drawing operations by
+{\color{red3}\verb!\color_fill:n {⟨color expression⟩}!} command
+for fills,
+{\color{red3}\verb!\color_stroke:n {⟨color expression⟩}!} command
+for strokes.
+%between {\color{red3}\verb!\ExplSyntaxOn!} and
+%{\color{red3}\verb!\ExplSyntaxOff!}.
+
+\bigskip
+
+\NineTestDraw
 
 \end{document}
