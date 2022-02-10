@@ -7,17 +7,28 @@
 %%% ----------------------------------------------------------------------------
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{ninecolors}[2021/05/24 v2021C Select colors with proper color contrast]
+\ProvidesExplPackage{ninecolors}{2022-02-10}{v2022D}
+  {Select colors with proper color contrast}
+
+%% We have to make ninecolors package support TeX Live 2020,
+%% because tabularray still supports TeX Live 2020 and it depends on this package.
+%% Therefore we need to load xparse package first.
+
 \RequirePackage{xcolor}
 \RequirePackage{xparse}
 
-%% Old version of l3color doesn't work if the colon has catcode letter.
+%% Old versions of l3color don't work if color model contains a colon.
+%% This bug has been fixed in LaTeX3 release 2021-07-12.
 %% See https://github.com/latex3/latex3/issues/962
 %% and https://github.com/lvjr/ninecolors/issues/1
-%% But we need to make ninecolors package support TeX Live 2020,
-%% because tabularray still supports TeX Live 2020 and it depends on this package.
-%% Therefore we can not use \ProvidesExplPackage in the above code,
-%% and we need to put color data before \ExplSyntaxOn/\ExplSyntaxOff block.
+%% Therefore we only define latex3 colors in newer LaTeX3 releases.
+%% Note that l3color was moved from l3experimental to l3kernel on 2021-02-18,
+%% hence we don't need to load l3color package first.
+
+\bool_new:N \l__ninecolors_define_latex_three_bool
+
+\@ifpackagelater{expl3}{2021-07-12} % need expl3 which is loaded by xparse
+  { \bool_set_true:N \l__ninecolors_define_latex_three_bool } { }
 
 \@namedef{ninecolors@define@color@mono}{%
   \ninecolors@define@one{gray1}{gray}{0.14}%
@@ -364,14 +375,11 @@
   \ninecolors@define@one{purple9}{rgb:Hsb}{330,0.16,0.98}%
 }
 
-\ExplSyntaxOn
-
 \cs_new_protected_nopar:Npn \__ninecolors_define_colors:n #1
   {
     \cs_set_eq:NN \ninecolors@define@one \definecolor
     \use:c { ninecolors@define@color@ #1 }
-    %% l3color is moved from l3experimental to l3kernel on 2021-02-18
-    \cs_if_exist:NT \color_set:nnn
+    \bool_if:NT \l__ninecolors_define_latex_three_bool
       {
         \cs_set_eq:NN \ninecolors@define@one \color_set:nnn
         \use:c { ninecolors@define@color@ #1 }
@@ -394,6 +402,4 @@
     \keys_set:nn {ninecolors} {#1}
     \exp_args:NV \__ninecolors_define_colors:n \l__ninecolors_sat_tl
   }
-
-\ExplSyntaxOff
 
