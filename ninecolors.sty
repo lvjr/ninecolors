@@ -19,7 +19,7 @@
 %% Therefore we can not use \ProvidesExplPackage in the above code,
 %% and we need to put color data before \ExplSyntaxOn/\ExplSyntaxOff block.
 
-\@namedef{ninecolors@define@mono}{%
+\@namedef{ninecolors@define@color@mono}{%
   \ninecolors@define@one{gray1}{gray}{0.14}%
   \ninecolors@define@one{gray2}{gray}{0.23}%
   \ninecolors@define@one{gray3}{gray}{0.30}%
@@ -364,11 +364,22 @@
   \ninecolors@define@one{purple9}{rgb:Hsb}{330,0.16,0.98}%
 }
 
-\let \ninecolors@define@one = \definecolor
-\@nameuse{ninecolors@define@mono}
-\@nameuse{ninecolors@define@color@medium}
-
 \ExplSyntaxOn
+
+\cs_new_protected_nopar:Npn \__ninecolors_define_colors:n #1
+  {
+    \cs_set_eq:NN \ninecolors@define@one \definecolor
+    \use:c { ninecolors@define@color@ #1 }
+    %% l3color is moved from l3experimental to l3kernel on 2021-02-18
+    \cs_if_exist:NT \color_set:nnn
+      {
+        \cs_set_eq:NN \ninecolors@define@one \color_set:nnn
+        \use:c { ninecolors@define@color@ #1 }
+      }
+  }
+
+\__ninecolors_define_colors:n { mono }
+\__ninecolors_define_colors:n { medium }
 
 \tl_new:N \l__ninecolors_sat_tl
 
@@ -381,7 +392,7 @@
 \NewDocumentCommand \NineColors {m}
   {
     \keys_set:nn {ninecolors} {#1}
-    \cs:w ninecolors@define@color@ \l__ninecolors_sat_tl \cs_end:
+    \exp_args:NV \__ninecolors_define_colors:n \l__ninecolors_sat_tl
   }
 
 \ExplSyntaxOff
