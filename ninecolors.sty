@@ -11,21 +11,13 @@
 \RequirePackage{xcolor}
 \RequirePackage{xparse}
 
-\ExplSyntaxOn
-
-\tl_new:N \l__ninecolors_sat_tl
-
-\keys_define:nn {ninecolors}
-  {
-    saturation .tl_set:N = \l__ninecolors_sat_tl,
-    saturation .initial:n = medium,
-  }
-
-\NewDocumentCommand \NineColors {m}
-  {
-    \keys_set:nn {ninecolors} {#1}
-    \cs:w ninecolors@define@color@ \l__ninecolors_sat_tl \cs_end:
-  }
+%% Old version of l3color doesn't work if the colon has catcode letter.
+%% See https://github.com/latex3/latex3/issues/962
+%% and https://github.com/lvjr/ninecolors/issues/1
+%% But we need to make ninecolors package support TeX Live 2020,
+%% because tabularray still supports TeX Live 2020 and it depends on this package.
+%% Therefore we can not use \ProvidesExplPackage in the above code,
+%% and we need to put color data before \ExplSyntaxOn/\ExplSyntaxOff block.
 
 \@namedef{ninecolors@define@mono}{%
   \definecolor{gray1}{gray}{0.14}
@@ -374,6 +366,22 @@
 
 \@nameuse{ninecolors@define@mono}
 \@nameuse{ninecolors@define@color@medium}
+
+\ExplSyntaxOn
+
+\tl_new:N \l__ninecolors_sat_tl
+
+\keys_define:nn {ninecolors}
+  {
+    saturation .tl_set:N = \l__ninecolors_sat_tl,
+    saturation .initial:n = medium,
+  }
+
+\NewDocumentCommand \NineColors {m}
+  {
+    \keys_set:nn {ninecolors} {#1}
+    \cs:w ninecolors@define@color@ \l__ninecolors_sat_tl \cs_end:
+  }
 
 \ExplSyntaxOff
 
