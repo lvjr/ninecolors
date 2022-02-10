@@ -397,7 +397,10 @@
 
 \keys_define:nn {ninecolors}
   {
-    saturation .tl_set:N = \l__ninecolors_sat_tl,
+    saturation .choice:,
+    saturation .value_required:n = true,
+    saturation .choices:nn = { low, medium, high }
+      { \tl_set_eq:NN \l__ninecolors_sat_tl \l_keys_choice_tl },
     saturation .initial:n = medium,
   }
 
